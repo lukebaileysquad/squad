@@ -27,6 +27,17 @@
         var id_token = googleUser.getAuthResponse().id_token;
         console.log("ID Token: " + id_token);
       }
+                function onSignIn(googleUser) {
+  var id_token = googleUser.getAuthResponse().id_token;
+  ...
+}
+  var xhr = new XMLHttpRequest();
+xhr.open('POST', 'https://yourbackend.example.com/tokensignin');
+xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+xhr.onload = function() {
+  console.log('Signed in as: ' + xhr.responseText);
+};
+xhr.send('idtoken=' + id_token);
     </script>
         <a href="#" onclick="signOut();">Sign out</a>
 <script>
@@ -36,6 +47,63 @@
       console.log('User signed out.');
     });
   }
+        import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+
+...
+
+GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+    // Specify the CLIENT_ID of the app that accesses the backend:
+    .setAudience(Collections.singletonList(CLIENT_ID))
+    // Or, if multiple clients access the backend:
+    //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
+    .build();
+
+// (Receive idTokenString by HTTPS POST)
+
+GoogleIdToken idToken = verifier.verify(idTokenString);
+if (idToken != null) {
+  Payload payload = idToken.getPayload();
+
+  // Print user identifier
+  String userId = payload.getSubject();
+  System.out.println("User ID: " + userId);
+
+  // Get profile information from payload
+  String email = payload.getEmail();
+  boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
+  String name = (String) payload.get("name");
+  String pictureUrl = (String) payload.get("picture");
+  String locale = (String) payload.get("locale");
+  String familyName = (String) payload.get("family_name");
+  String givenName = (String) payload.get("given_name");
+
+  // Use or store profile information
+  // ...
+
+} else {
+  System.out.println("Invalid ID token.");
+}
+        {
+ // These six fields are included in all Google ID Tokens.
+ "iss": "https://accounts.google.com",
+ "sub": "110169484474386276334",
+ "azp": "1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com",
+ "aud": "1008719970978-hb24n2dstb40o45d4feuo2ukqmcc6381.apps.googleusercontent.com",
+ "iat": "1433978353",
+ "exp": "1433981953",
+
+ // These seven fields are only included when the user has granted the "profile" and
+ // "email" OAuth scopes to the application.
+ "email": "testuser@gmail.com",
+ "email_verified": "true",
+ "name" : "Test User",
+ "picture": "https://lh4.googleusercontent.com/-kYgzyAWpZzJ/ABCDEFGHI/AAAJKLMNOP/tIXL9Ir44LE/s99-c/photo.jpg",
+ "given_name": "Test",
+ "family_name": "User",
+ "locale": "en"
+}
 </script>
 </body>        
 </html>
