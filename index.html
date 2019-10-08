@@ -4,8 +4,8 @@
 <head>
         <title>Fum Home</title>
           <meta name="google-signin-scope" content="profile email">
-    <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+<meta name="google-signin-client_id" content="232183175366-6p0l7qu4mo2072eoie19fqk6dmgarb3l.apps.googleusercontent.com "
+ <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 <body>
         <a href="">games pic goes here</a>
@@ -27,6 +27,15 @@
         console.log("ID Token: " + id_token);
       }
     </script>
+        <a href="#" onclick="signOut();">Sign out</a>
+<script>
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+</script>
 </body>        
 </html>
                 
